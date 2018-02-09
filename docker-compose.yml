@@ -1,0 +1,7 @@
+version: "3"
+services:
+  initial:
+    build: .
+    image: registry.cn-beijing.aliyuncs.com/wangdali/spring-initializr
+    ports:
+      - "8080:8080"
