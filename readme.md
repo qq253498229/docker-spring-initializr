@@ -1,7 +1,7 @@
 ###
 
 - 本项目是[spring官方脚手架](https://github.com/spring-io/initializr)的修改版，旨在帮助中国用户加快访问速度
-- 实际地址为 https://init.codeforfun.cn/
+- 实际地址为 https://init.codeforfun.cn/ ，可以在IntelliJ IDEA中创建Spring Initializr项目的时候指定该地址，也可以打开网页生成脚手架后下载zip文件
 - 希望大家工作学习顺利
 
 
