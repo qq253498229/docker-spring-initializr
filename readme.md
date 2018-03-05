@@ -5,7 +5,7 @@
 - 希望大家工作学习顺利
 
 
-##### 说明
+#### 说明
 
 - 修改了 initializr-service/src/main/resource/application.yml 修改后内容[查看](https://github.com/qq253498229/initializr/blob/master/initializr-service/src/main/resources/application.yml)
   - application.yml文件定义了各种依赖的版本。
@@ -16,3 +16,10 @@
 - 阿里云docker image : registry.cn-beijing.aliyuncs.com/wangdali/spring-initializr
   - [Dockerfile](Dockerfile)
   - [docker-compose.yml](docker-compose.yml)
+  
+#### 更新 2018-03-05
+
+- spring-cloud更新到Finchley.M8
+- 删除git版本库中的jar包（导致pull过慢）
+- spring-boot升级到2.0.0.RELEASE
+- 
