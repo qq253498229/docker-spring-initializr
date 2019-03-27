@@ -1,0 +1,14 @@
+[[_title]]
+= Docker Spring Initializr
+
+Docker version of link:https://start.spring.io[Spring Initializr]
+
+[[_usage]]
+== Usage
+
+[[source,bash]]
+----
+docker-compose up -d
+----
+
+Open your browser and access link:http://127.0.0.1:8080[http://127.0.0.1:8080]

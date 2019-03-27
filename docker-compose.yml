@@ -1,7 +1,7 @@
 version: "3"
 services:
-  initial:
+  initializr:
     build: .
-    image: registry.cn-beijing.aliyuncs.com/wangdali/spring-initializr
+    image: docker.io/kuzoncby/spring-initializr:latest
     ports:
       - "8080:8080"
