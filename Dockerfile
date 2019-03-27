@@ -5,7 +5,7 @@ WORKDIR /opt
 ENV JAVA_HOME=/etc/alternatives/java_sdk_11
 
 RUN yum install java-11-openjdk-devel git -y \
-    && https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz | tar xvz -C /opt/ --exclude="*.cmd" --exclude="docs" --exclude="example" --exclude="licenses" \
+    && curl https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz | tar xvz -C /opt/ --exclude="*.cmd" --exclude="docs" --exclude="example" --exclude="licenses" \
     && ln -s /opt/apache-maven-3.6.0/bin/mvn /bin/mvn \
     && git clone https://github.com/spring-io/start.spring.io.git /opt/site \
     && cd /opt/site && mvn -B install -Dmaven.test.skip=true \
