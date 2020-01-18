@@ -1,18 +1,17 @@
-FROM docker.io/library/centos:7
+FROM docker.io/library/ubuntu:eoan
 
 WORKDIR /opt
 
-ENV JAVA_HOME=/etc/alternatives/java_sdk_11
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-RUN yum install java-11-openjdk-devel git -y \
-    && curl -s https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz | tar xvz -C /opt/ --exclude="*.cmd" --exclude="docs" --exclude="example" --exclude="licenses" \
-    && ln -s /opt/apache-maven-3.6.3/bin/mvn /bin/mvn \
+RUN apt update && apt upgrade -y \
+    && apt install openjdk-11-jdk-headless maven git node-gyp -y \
     && git clone https://github.com/spring-io/start.spring.io.git /opt/site \
     && cd /opt/site && mvn -B install -Dmaven.test.skip=true \
-    && cd /opt/site/start-site  && mvn -B package -Dmaven.test.skip=true \
+    && cd /opt/site/start-site && mvn -B package -Dmaven.test.skip=true \
     && mv target/start-site.jar /opt/app.jar \
-    && cd /opt && rm -rf ~/.m2/ /opt/site/ /bin/mvn /opt/apache-maven* \
-    && yum remove git -y && yum autoremove -y \
-    && yum clean all && rm -rf /tmp/* && rm -rf /usr/share/doc/ && rm -rf /usr/share/man
+    && cd /opt && rm -rf ~/.m2/ /opt/site/ \
+    && apt purge git maven node -y && apt autoremove -y \
+    && rm -rf /tmp/* && rm -rf /usr/share/doc/ && rm -rf /usr/share/man
 
-CMD ["/etc/alternatives/java_sdk_11/bin/java","-jar","/opt/app.jar"]
+CMD ["/usr/lib/jvm/java-11-openjdk-amd64/bin/java","-jar","/opt/app.jar"]
