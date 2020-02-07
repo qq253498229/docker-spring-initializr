@@ -1,0 +1,126 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: spring-initializr
+  annotations:
+    openshift.io/display-name: "Spring Initializr"
+    description: "Spring Initializr 提供了一个简单的 Web UI，用于配置 Spring Boot 项目以生成。"
+    tags: "spring,boot,java"
+    iconClass: "icon-spring"
+    openshift.io/provider-display-name: "Pivotal Software, Inc."
+    openshift.io/documentation-url: "https://docs.spring.io/initializr/docs/current-SNAPSHOT/reference/html/"
+    openshift.io/long-description: >-
+      # 使用
+
+      ![开始](https://docs.spring.io/initializr/docs/current-SNAPSHOT/reference/html/images/web-selected.png)
+
+      转到 [start.spring.io](https://start.spring.io) 或您的私服地址，在页面填写必要参数，点击下载生成项目。
+
+      > *注意*：默认情况下该服务生成最新版本的 Spring Boot 项目。
+
+parameters:
+  - name: APP_NAME
+    displayName: 名称
+    description: 应用程序名称。
+    required: true
+    value: spring-initializr
+  - name: ROUTE_HOST
+    displayName: 访问地址
+    description: 通过此地址访问 Spring Initializr 服务。
+    required: true
+    value: start.apps.cluster.local
+
+labels:
+  template: spring-initializr
+
+message: >-
+  ${APP_NAME} 服务已经在您指定的项目空间中创建：
+
+          访问: http://${ROUTE_HOST}/
+
+  了解更多信息，请访问： https://docs.spring.io/initializr/docs/current-SNAPSHOT/reference/html/
+
+objects:
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: "${APP_NAME}"
+      labels:
+        app: "${APP_NAME}"
+      display-name: "Spring Initializr"
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: "${APP_NAME}"
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: "${APP_NAME}"
+        spec:
+          hostname: "${APP_NAME}"
+          containers:
+            image: "docker.io/kuzoncby/spring-initializr:latest"
+            imagePullPolicy: Always
+            name: "${APP_NAME}"
+            ports:
+              - containerPort: 8080
+            resources:
+              requests:
+                cpu: 200m
+                memory: 512Mi
+              limits:
+                cpu: 800m
+                memory: 1Gi
+            livenessProbe:
+              httpGet:
+                path: "/"
+                port: 8080
+              initialDelaySeconds: 30
+              periodSeconds: 60
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+      test: false
+      triggers:
+        - type: ConfigChange
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      labels:
+        app: "${APP_NAME}"
+      name: "${APP_NAME}"
+    spec:
+      ports:
+        - name: http
+          port: 8080
+      selector:
+        deploymentconfig: "${APP_NAME}"
+      sessionAffinity: None
+
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      labels:
+        app: "${APP_NAME}"
+      name: "${APP_NAME}"
+    spec:
+      host: "${ROUTE_HOST}"
+      path: "/"
+      port:
+        targetPort: http
+      to:
+        kind: Service
+        name: "${APP_NAME}"
+        weight: 100
+      wildcardPolicy: None
